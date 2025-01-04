@@ -34,29 +34,28 @@ jobs:
           # Log in to Hugging Face
           echo $HF_TOKEN | huggingface-cli login --token
 
-          # Define space variables
-          SPACE_NAME="eman1234/text-summarization"
-
-          # Create the Hugging Face Space if it doesn't exist
-          python - <<EOF
+          # Execute Python script to create Hugging Face Space
+          python - <<'EOF'
 from huggingface_hub import HfApi
 
 api = HfApi()
+space_name = "eman1234/text-summarization"
+
 try:
-    api.create_repo(name="$SPACE_NAME", repo_type="space", exist_ok=True)
-    print(f"Space '{SPACE_NAME}' created or already exists.")
+    api.create_repo(name=space_name, repo_type="space", exist_ok=True)
+    print(f"Space '{space_name}' created or already exists.")
 except Exception as e:
     print(f"Error creating space: {e}")
 EOF
 
           # Clone the Hugging Face Space repository
-          git clone https://huggingface.co/spaces/$SPACE_NAME
+          git clone https://huggingface.co/spaces/eman1234/text-summarization
 
           # Copy all files to the space repository
-          rsync -av --exclude '.git' ./ $SPACE_NAME/
+          rsync -av --exclude '.git' ./ eman1234/text-summarization/
 
           # Commit and push changes
-          cd $SPACE_NAME
+          cd eman1234/text-summarization
           git add .
           git commit -m "Deploy Gradio App" || echo "No changes to commit"
           git push
