@@ -31,8 +31,8 @@ jobs:
           pip install huggingface_hub
           huggingface-cli login --token $HF_TOKEN
           
-          # Create the space repository without specifying --sdk argument
-          huggingface-cli repo create eman1234/text-summarization --type space
+          # Create the space repository with --yes flag to bypass the confirmation prompt
+          huggingface-cli repo create eman1234/text-summarization --type space --yes
           
           # Clone the space repository
           git clone https://huggingface.co/spaces/eman1234/text-summarization
