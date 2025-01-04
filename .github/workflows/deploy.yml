@@ -1,0 +1,39 @@
+name: CI/CD for Hugging Face Space
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Deploy to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          pip install huggingface_hub
+          huggingface-cli login --token $HF_TOKEN
+          huggingface-cli repo create eman1234/text-summarization --type space --sdk gradio
+          git clone https://huggingface.co/spaces/eman1234/text-summarization
+          cp -r ./* YOUR_SPACE_NAME/
+          cd YOUR_SPACE_NAME
+          git add .
+          git commit -m "Deploy Gradio App"
+          git push
