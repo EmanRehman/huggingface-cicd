@@ -34,19 +34,19 @@ jobs:
           # Log in to Hugging Face
           echo $HF_TOKEN | huggingface-cli login --token
 
-          # Execute Python script to create Hugging Face Space
-          python - <<'EOF'
+          # Create Hugging Face Space if it doesn't exist
+          python -c "
 from huggingface_hub import HfApi
 
 api = HfApi()
-space_name = "eman1234/text-summarization"
+space_name = 'eman1234/text-summarization'
 
 try:
-    api.create_repo(name=space_name, repo_type="space", exist_ok=True)
-    print(f"Space '{space_name}' created or already exists.")
+    api.create_repo(name=space_name, repo_type='space', exist_ok=True)
+    print(f'Space {space_name} created or already exists.')
 except Exception as e:
-    print(f"Error creating space: {e}")
-EOF
+    print(f'Error creating space: {e}')
+"
 
           # Clone the Hugging Face Space repository
           git clone https://huggingface.co/spaces/eman1234/text-summarization
