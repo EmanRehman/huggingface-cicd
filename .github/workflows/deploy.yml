@@ -30,10 +30,11 @@ jobs:
         run: |
           pip install huggingface_hub
           huggingface-cli login --token $HF_TOKEN
-          huggingface-cli repo create eman1234/text-summarization --type space --sdk gradio
+          # Create Hugging Face Space without specifying --sdk gradio
+          huggingface-cli repo create eman1234/text-summarization --type space
           git clone https://huggingface.co/spaces/eman1234/text-summarization
-          cp -r ./* YOUR_SPACE_NAME/
-          cd YOUR_SPACE_NAME
+          cp -r ./* text-summarization/
+          cd text-summarization
           git add .
           git commit -m "Deploy Gradio App"
           git push
