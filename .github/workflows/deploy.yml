@@ -35,12 +35,12 @@ jobs:
           huggingface-cli login --token $HF_TOKEN
           
           # Create the Hugging Face Space repository programmatically using huggingface_hub API
-          python -c "
+python -c "
 from huggingface_hub import HfApi
 api = HfApi()
 api.create_repo('eman1234/text-summarization', repo_type='space')
 "
-          
+
           # Clone the space repository
           git clone https://huggingface.co/spaces/eman1234/text-summarization
           
