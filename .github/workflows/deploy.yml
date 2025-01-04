@@ -29,10 +29,16 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           pip install huggingface_hub
+          pip install gitpython  # Install GitPython to interact with git
+          
+          # Log in to Hugging Face
           huggingface-cli login --token $HF_TOKEN
           
-          # Create the space repository with the correct format
-          huggingface-cli repo create eman1234/text-summarization --type space --yes
+          # Create the Hugging Face Space repository programmatically using huggingface_hub API
+          python -c "
+from huggingface_hub import create_repo
+create_repo('eman1234/text-summarization', repo_type='space', exist_ok=True)
+"
           
           # Clone the space repository
           git clone https://huggingface.co/spaces/eman1234/text-summarization
@@ -45,5 +51,5 @@ jobs:
           
           # Commit and push the changes
           git add .
-          git commit -m "Deploy Gradio App"
+          git commit -m 'Deploy Gradio App'
           git push
