@@ -36,8 +36,9 @@ jobs:
           
           # Create the Hugging Face Space repository programmatically using huggingface_hub API
           python -c "
-from huggingface_hub import create_repo
-create_repo('eman1234/text-summarization', repo_type='space', exist_ok=True)
+from huggingface_hub import HfApi
+api = HfApi()
+api.create_repo('eman1234/text-summarization', repo_type='space')
 "
           
           # Clone the space repository
