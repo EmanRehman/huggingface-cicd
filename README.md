@@ -1,5 +1,5 @@
 # Text Summarization App
-
+#
 This is a simple Gradio-based app for text summarization using Hugging Face's transformers.
 
 ## Setup
