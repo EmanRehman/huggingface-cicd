@@ -1,61 +1,32 @@
-name: CI/CD for Hugging Face Space
+name: Sync to Hugging Face Hub
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
+  # to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  sync-to-hub:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      # Step 1: Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-
-      - name: Deploy to Hugging Face Space
+      # Step 2: Add Hugging Face remote repository
+      - name: Add remote
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF: ${{ secrets.HF }}
         run: |
-          # Install Hugging Face CLI and required libraries
-          pip install huggingface_hub
+          git remote add space https://huggingface:$HF@huggingface.co/spaces/eman1234/text-summarization
 
-          # Log in to Hugging Face
-          echo $HF_TOKEN | huggingface-cli login --token
-
-          # Create Hugging Face Space if it doesn't exist
-          python -c "
-from huggingface_hub import HfApi
-
-api = HfApi()
-space_name = 'eman1234/text-summarization'
-
-try:
-    api.create_repo(name=space_name, repo_type='space', exist_ok=True)
-    print(f'Space {space_name} created or already exists.')
-except Exception as e:
-    print(f'Error creating space: {e}')
-"
-
-          # Clone the Hugging Face Space repository
-          git clone https://huggingface.co/spaces/eman1234/text-summarization
-
-          # Copy all files to the space repository
-          rsync -av --exclude '.git' ./ eman1234/text-summarization/
-
-          # Commit and push changes
-          cd eman1234/text-summarization
-          git add .
-          git commit -m "Deploy Gradio App" || echo "No changes to commit"
-          git push
+      # Step 3: Push code to Hugging Face Space
+      - name: Push to Hugging Face Hub
+        env:
+          HF: ${{ secrets.HF }}
+        run: |
+          git push --force https://huggingface:$HF@huggingface.co/spaces/eman1234/text-summarization main
