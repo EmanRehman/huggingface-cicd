@@ -1,3 +1,5 @@
 gradio
 transformers
-tensorflow
+tensorflow>=2.0
+tf_keras
+huggingface_hub
