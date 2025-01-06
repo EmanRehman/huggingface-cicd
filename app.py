@@ -1,14 +1,16 @@
-import gradio as gr
 from transformers import pipeline
+import gradio as gr
 
-# Load pre-trained text summarization model from Hugging Face
-summarizer = pipeline("summarization")
 
-def summarize_text(text):
-    return summarizer(text)[0]['summary_text']
+model = pipeline(
+    "summarization",
+)
 
-# Define the Gradio interface
-iface = gr.Interface(fn=summarize_text, inputs="text", outputs="text", live=True)
+def predict(prompt):
+    summary = model(prompt)[0]["summary_text"]
+    return summary
 
-# Launch the app
-iface.launch()
+
+# create an interface for the model
+with gr.Interface(predict, "textbox", "text") as interface:
+    interface.launch()
